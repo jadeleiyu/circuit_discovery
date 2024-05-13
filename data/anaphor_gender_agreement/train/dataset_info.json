@@ -1,0 +1,74 @@
+{
+  "builder_name": "blimp",
+  "citation": "\n@article{warstadt2019blimp,\n  title={BLiMP: A Benchmark of Linguistic Minimal Pairs for English},\n  author={Warstadt, Alex and Parrish, Alicia and Liu, Haokun and Mohananey, Anhad and Peng, Wei, and Wang, Sheng-Fu and Bowman, Samuel R},\n  journal={arXiv preprint arXiv:1912.00582},\n  year={2019}\n}\n",
+  "config_name": "anaphor_gender_agreement",
+  "dataset_name": "blimp",
+  "dataset_size": 130918,
+  "description": "\nBLiMP is a challenge set for evaluating what language models (LMs) know about\nmajor grammatical phenomena in English. BLiMP consists of 67 sub-datasets, each\ncontaining 1000 minimal pairs isolating specific contrasts in syntax,\nmorphology, or semantics. The data is automatically generated according to\nexpert-crafted grammars.\n",
+  "download_checksums": {
+    "https://raw.githubusercontent.com/alexwarstadt/blimp/master/data/anaphor_gender_agreement.jsonl": {
+      "num_bytes": 436749,
+      "checksum": null
+    }
+  },
+  "download_size": 436749,
+  "features": {
+    "sentence_good": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "sentence_bad": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "field": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "linguistics_term": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "UID": {
+      "dtype": "string",
+      "_type": "Value"
+    },
+    "simple_LM_method": {
+      "dtype": "bool",
+      "_type": "Value"
+    },
+    "one_prefix_method": {
+      "dtype": "bool",
+      "_type": "Value"
+    },
+    "two_prefix_method": {
+      "dtype": "bool",
+      "_type": "Value"
+    },
+    "lexically_identical": {
+      "dtype": "bool",
+      "_type": "Value"
+    },
+    "pair_id": {
+      "dtype": "int32",
+      "_type": "Value"
+    }
+  },
+  "homepage": "https://github.com/alexwarstadt/blimp/tree/master/",
+  "license": "",
+  "size_in_bytes": 567667,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 130918,
+      "num_examples": 1000,
+      "dataset_name": "blimp"
+    }
+  },
+  "version": {
+    "version_str": "0.1.0",
+    "major": 0,
+    "minor": 1,
+    "patch": 0
+  }
+}

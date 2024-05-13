@@ -1,0 +1,800 @@
+digraph {
+	attn_2_10_V [color=red]
+	attn_1_8_K [color=red]
+	attn_1_5_O [color=red]
+	attn_2_10_O [color=red]
+	attn_1_10_V [color=red]
+	attn_1_7_O [color=red]
+	attn_2_11_Q [color=red]
+	attn_1_8_Q [color=red]
+	attn_0_7_K [color=red]
+	attn_4_8_Q [color=red]
+	attn_2_11_K [color=red]
+	attn_0_11_Q [color=red]
+	attn_0_9_V [color=red]
+	attn_1_10_K [color=red]
+	attn_4_8_K [color=red]
+	attn_2_11_V [color=red]
+	attn_0_9_O [color=red]
+	attn_4_8_V [color=red]
+	attn_2_11_O [color=red]
+	attn_4_8_O [color=red]
+	attn_11_8_Q [color=red]
+	attn_3_0_Q [color=red]
+	attn_1_6_V [color=red]
+	mlp_3 [color=green]
+	attn_11_8_K [color=red]
+	attn_1_9_V [color=red]
+	attn_1_8_O [color=red]
+	attn_0_1_Q [color=red]
+	attn_3_0_K [color=red]
+	attn_11_8_V [color=red]
+	attn_1_7_K [color=red]
+	attn_6_6_K [color=red]
+	attn_3_0_V [color=red]
+	attn_1_7_Q [color=red]
+	attn_11_8_O [color=red]
+	mlp_10 [color=green]
+	attn_6_6_V [color=red]
+	attn_3_0_O [color=red]
+	attn_6_6_O [color=red]
+	attn_4_10_Q [color=red]
+	attn_3_1_Q [color=red]
+	attn_1_7_V [color=red]
+	attn_4_10_K [color=red]
+	attn_3_1_K [color=red]
+	attn_1_5_Q [color=red]
+	attn_0_10_V [color=red]
+	attn_4_10_V [color=red]
+	attn_3_1_V [color=red]
+	attn_4_10_O [color=red]
+	attn_3_1_O [color=red]
+	attn_11_10_Q [color=red]
+	attn_0_10_O [color=red]
+	attn_11_10_K [color=red]
+	attn_1_6_O [color=red]
+	attn_11_10_V [color=red]
+	attn_11_10_O [color=red]
+	attn_8_5_Q [color=red]
+	attn_8_5_K [color=red]
+	attn_5_0_Q [color=red]
+	mlp_5 [color=green]
+	attn_8_5_O [color=red]
+	attn_5_0_K [color=red]
+	attn_0_11_O [color=red]
+	attn_0_7_O [color=red]
+	attn_5_0_V [color=red]
+	attn_5_0_O [color=red]
+	attn_3_4_Q [color=red]
+	attn_3_4_K [color=red]
+	attn_1_0_O [color=red]
+	attn_3_4_V [color=red]
+	attn_3_4_O [color=red]
+	mlp_0 [color=green]
+	attn_3_5_Q [color=red]
+	attn_3_5_K [color=red]
+	attn_3_5_V [color=red]
+	attn_0_7_Q [color=red]
+	attn_3_6_O [color=red]
+	attn_3_6_V [color=red]
+	attn_1_3_O [color=red]
+	attn_1_2_K [color=red]
+	attn_5_3_Q [color=red]
+	attn_3_5_O [color=red]
+	attn_3_6_K [color=red]
+	mlp_7 [color=green]
+	attn_5_3_K [color=red]
+	attn_3_6_Q [color=red]
+	attn_5_3_V [color=red]
+	attn_5_3_O [color=red]
+	attn_8_10_Q [color=red]
+	attn_10_7_Q [color=red]
+	attn_8_10_K [color=red]
+	attn_10_7_K [color=red]
+	attn_8_10_V [color=red]
+	attn_2_9_Q [color=red]
+	attn_10_7_V [color=red]
+	attn_8_10_O [color=red]
+	attn_2_9_K [color=red]
+	attn_5_5_Q [color=red]
+	attn_10_7_O [color=red]
+	attn_5_5_K [color=red]
+	attn_2_8_K [color=red]
+	attn_10_8_Q [color=red]
+	attn_0_9_K [color=red]
+	attn_2_8_Q [color=red]
+	attn_5_5_V [color=red]
+	attn_10_8_K [color=red]
+	attn_1_6_K [color=red]
+	attn_2_7_O [color=red]
+	attn_5_5_O [color=red]
+	attn_10_8_V [color=red]
+	attn_1_1_Q [color=red]
+	attn_2_7_V [color=red]
+	attn_1_2_Q [color=red]
+	attn_10_8_O [color=red]
+	attn_1_4_O [color=red]
+	attn_1_4_Q [color=red]
+	attn_2_7_K [color=red]
+	attn_2_7_Q [color=red]
+	attn_1_4_K [color=red]
+	attn_3_10_Q [color=red]
+	attn_2_6_O [color=red]
+	attn_3_10_K [color=red]
+	attn_2_6_V [color=red]
+	attn_3_10_V [color=red]
+	attn_1_3_V [color=red]
+	attn_2_6_K [color=red]
+	attn_1_1_O [color=red]
+	attn_3_10_O [color=red]
+	attn_2_6_Q [color=red]
+	mlp_1 [color=green]
+	attn_2_4_O [color=red]
+	attn_0_8_O [color=red]
+	attn_2_4_V [color=red]
+	attn_0_8_K [color=red]
+	attn_2_4_K [color=red]
+	attn_0_8_V [color=red]
+	attn_2_4_Q [color=red]
+	attn_5_9_Q [color=red]
+	attn_7_6_Q [color=red]
+	attn_5_9_K [color=red]
+	attn_1_4_V [color=red]
+	attn_0_1_V [color=red]
+	attn_7_6_K [color=red]
+	attn_5_9_V [color=red]
+	attn_11_0_Q [color=red]
+	attn_7_6_V [color=red]
+	mlp_11 [color=green]
+	attn_1_8_V [color=red]
+	attn_5_9_O [color=red]
+	attn_7_6_O [color=red]
+	attn_11_0_K [color=red]
+	input [color=blue]
+	attn_5_10_Q [color=red]
+	attn_11_0_V [color=red]
+	attn_1_5_K [color=red]
+	output [color=blue]
+	attn_11_0_O [color=red]
+	attn_0_11_K [color=red]
+	attn_5_10_V [color=red]
+	attn_0_1_K [color=red]
+	attn_0_1_O [color=red]
+	attn_5_10_O [color=red]
+	attn_0_3_Q [color=red]
+	attn_2_1_O [color=red]
+	attn_0_2_O [color=red]
+	attn_2_1_V [color=red]
+	attn_0_2_K [color=red]
+	attn_0_2_Q [color=red]
+	attn_2_1_K [color=red]
+	attn_2_1_Q [color=red]
+	attn_1_3_Q [color=red]
+	attn_0_2_V [color=red]
+	attn_1_2_O [color=red]
+	attn_4_3_Q [color=red]
+	attn_4_3_K [color=red]
+	mlp_6 [color=green]
+	attn_0_3_K [color=red]
+	attn_4_3_V [color=red]
+	attn_0_4_V [color=red]
+	attn_11_3_Q [color=red]
+	attn_4_3_O [color=red]
+	attn_1_2_V [color=red]
+	mlp_2 [color=green]
+	attn_0_3_O [color=red]
+	attn_11_3_K [color=red]
+	attn_0_3_V [color=red]
+	attn_1_9_Q [color=red]
+	attn_1_3_K [color=red]
+	attn_11_3_V [color=red]
+	attn_1_10_O [color=red]
+	attn_1_1_V [color=red]
+	attn_11_3_O [color=red]
+	attn_1_11_V [color=red]
+	attn_1_1_K [color=red]
+	attn_0_4_O [color=red]
+	attn_1_11_O [color=red]
+	attn_1_6_Q [color=red]
+	attn_11_4_K [color=red]
+	attn_0_5_O [color=red]
+	attn_11_4_V [color=red]
+	attn_2_8_O [color=red]
+	attn_1_9_K [color=red]
+	attn_2_8_V [color=red]
+	attn_11_4_O [color=red]
+	attn_1_9_O [color=red]
+	attn_1_11_Q [color=red]
+	attn_1_0_V [color=red]
+	attn_1_11_K [color=red]
+	attn_1_0_Q [color=red]
+	attn_0_11_V [color=red]
+	attn_4_6_Q [color=red]
+	attn_0_5_V [color=red]
+	attn_2_9_V [color=red]
+	attn_4_6_K [color=red]
+	attn_2_9_O [color=red]
+	mlp_8 [color=green]
+	attn_4_6_V [color=red]
+	attn_4_6_O [color=red]
+	attn_2_10_K [color=red]
+	attn_1_5_V [color=red]
+	attn_1_0_K [color=red]
+	attn_0_10_O -> attn_1_9_Q
+	input -> attn_1_0_K
+	mlp_0 -> attn_1_11_K
+	attn_1_7_O -> attn_2_8_V
+	mlp_3 -> attn_11_4_V
+	attn_0_10_O -> mlp_1
+	attn_1_8_O -> attn_4_3_K
+	attn_1_8_O -> attn_2_6_Q
+	attn_0_9_O -> attn_1_5_K
+	mlp_2 -> attn_4_10_V
+	mlp_3 -> mlp_6
+	input -> mlp_1
+	attn_2_11_V -> attn_2_11_O
+	attn_0_3_K -> attn_0_3_O
+	mlp_1 -> attn_11_8_K
+	mlp_2 -> attn_3_1_K
+	attn_1_8_O -> attn_3_10_K
+	attn_1_9_V -> attn_1_9_O
+	attn_8_5_K -> attn_8_5_O
+	attn_1_10_K -> attn_1_10_O
+	mlp_0 -> attn_1_3_V
+	attn_1_9_O -> attn_5_3_Q
+	input -> attn_0_8_K
+	attn_2_10_O -> attn_3_1_V
+	attn_1_8_O -> attn_4_6_Q
+	attn_1_5_V -> attn_1_5_O
+	mlp_0 -> attn_1_3_K
+	attn_1_11_Q -> attn_1_11_O
+	attn_7_6_V -> attn_7_6_O
+	mlp_6 -> attn_8_10_Q
+	attn_1_4_O -> attn_11_3_K
+	input -> attn_0_2_K
+	mlp_0 -> mlp_11
+	attn_2_9_K -> attn_2_9_O
+	mlp_10 -> mlp_11
+	mlp_6 -> attn_10_8_K
+	attn_3_4_O -> attn_4_3_V
+	attn_11_3_O -> output
+	mlp_0 -> attn_2_6_V
+	attn_2_10_K -> attn_2_10_O
+	attn_1_6_K -> attn_1_6_O
+	mlp_0 -> attn_5_9_V
+	attn_0_9_O -> attn_1_9_V
+	mlp_3 -> attn_11_8_K
+	mlp_2 -> attn_3_0_K
+	attn_11_3_Q -> attn_11_3_O
+	input -> attn_1_10_K
+	attn_0_1_O -> attn_1_8_V
+	attn_3_0_O -> attn_4_10_V
+	attn_0_11_V -> attn_0_11_O
+	attn_4_8_O -> attn_5_10_V
+	mlp_0 -> attn_1_4_V
+	attn_5_0_K -> attn_5_0_O
+	input -> attn_1_2_V
+	attn_3_5_V -> attn_3_5_O
+	attn_1_9_O -> attn_11_3_K
+	mlp_1 -> attn_3_0_V
+	attn_6_6_O -> attn_10_7_Q
+	attn_3_5_K -> attn_3_5_O
+	attn_0_9_O -> attn_2_8_Q
+	mlp_5 -> attn_6_6_V
+	attn_1_4_O -> attn_2_10_V
+	attn_8_10_V -> attn_8_10_O
+	attn_1_9_O -> attn_4_6_K
+	input -> attn_0_9_K
+	mlp_0 -> attn_11_8_Q
+	attn_1_11_V -> attn_1_11_O
+	attn_5_3_K -> attn_5_3_O
+	attn_11_10_O -> output
+	mlp_0 -> attn_1_1_K
+	mlp_3 -> attn_4_6_V
+	mlp_0 -> attn_1_4_Q
+	mlp_0 -> attn_2_7_K
+	attn_3_0_V -> attn_3_0_O
+	mlp_0 -> attn_2_1_V
+	attn_0_5_V -> attn_0_5_O
+	attn_0_7_K -> attn_0_7_O
+	attn_6_6_K -> attn_6_6_O
+	attn_11_4_V -> attn_11_4_O
+	mlp_3 -> attn_10_8_K
+	attn_1_1_K -> attn_1_1_O
+	mlp_0 -> attn_2_9_K
+	mlp_2 -> attn_4_3_K
+	attn_3_6_Q -> attn_3_6_O
+	attn_0_10_O -> attn_4_6_Q
+	mlp_0 -> attn_11_0_V
+	attn_0_9_O -> attn_1_1_V
+	attn_10_8_K -> attn_10_8_O
+	attn_0_11_O -> attn_1_11_V
+	attn_4_10_Q -> attn_4_10_O
+	mlp_0 -> attn_1_0_K
+	attn_0_10_O -> attn_1_3_V
+	attn_2_7_O -> attn_3_6_V
+	mlp_0 -> attn_11_3_Q
+	mlp_2 -> attn_3_10_K
+	attn_0_9_O -> attn_1_2_V
+	attn_0_8_V -> attn_0_8_O
+	mlp_2 -> attn_3_5_Q
+	mlp_1 -> attn_2_4_V
+	mlp_1 -> attn_2_11_K
+	mlp_1 -> attn_3_6_K
+	attn_1_7_O -> attn_5_10_V
+	attn_7_6_K -> attn_7_6_O
+	attn_2_1_O -> attn_4_8_V
+	attn_0_11_O -> attn_1_7_Q
+	mlp_2 -> attn_11_8_V
+	mlp_1 -> attn_11_0_K
+	attn_6_6_O -> attn_10_7_K
+	attn_8_10_O -> output
+	attn_3_0_K -> attn_3_0_O
+	mlp_0 -> mlp_2
+	mlp_0 -> attn_6_6_V
+	mlp_1 -> attn_2_8_K
+	mlp_0 -> attn_2_4_K
+	mlp_1 -> attn_3_5_Q
+	mlp_0 -> attn_11_0_Q
+	attn_1_11_K -> attn_1_11_O
+	attn_1_1_O -> attn_4_8_Q
+	attn_2_9_Q -> attn_2_9_O
+	attn_0_9_O -> attn_10_8_V
+	attn_3_1_V -> attn_3_1_O
+	attn_1_7_O -> attn_3_4_Q
+	attn_0_9_O -> attn_3_4_V
+	attn_1_10_O -> attn_11_3_K
+	attn_1_4_O -> attn_2_7_Q
+	mlp_0 -> attn_3_1_Q
+	attn_10_7_Q -> attn_10_7_O
+	mlp_1 -> attn_2_7_V
+	input -> attn_0_2_Q
+	attn_3_6_O -> attn_5_3_V
+	attn_10_7_O -> output
+	mlp_1 -> attn_3_4_Q
+	attn_0_9_O -> attn_1_8_K
+	attn_1_4_O -> attn_5_5_Q
+	attn_1_5_O -> attn_4_10_Q
+	mlp_2 -> attn_11_4_V
+	attn_5_9_Q -> attn_5_9_O
+	attn_0_10_O -> attn_1_5_V
+	mlp_0 -> attn_1_8_Q
+	mlp_0 -> mlp_10
+	attn_2_4_Q -> attn_2_4_O
+	mlp_6 -> attn_11_3_K
+	mlp_0 -> attn_1_2_K
+	attn_1_7_O -> attn_2_1_Q
+	attn_1_4_O -> mlp_1
+	mlp_2 -> attn_11_3_V
+	mlp_2 -> attn_3_10_Q
+	mlp_0 -> attn_8_5_Q
+	attn_0_10_O -> attn_1_7_Q
+	attn_1_7_K -> attn_1_7_O
+	attn_1_3_V -> attn_1_3_O
+	attn_8_5_O -> attn_10_8_Q
+	attn_5_5_O -> attn_6_6_V
+	attn_2_8_O -> attn_3_10_V
+	attn_11_10_Q -> attn_11_10_O
+	mlp_0 -> attn_1_10_K
+	attn_11_10_V -> attn_11_10_O
+	attn_3_4_K -> attn_3_4_O
+	attn_11_3_K -> attn_11_3_O
+	attn_7_6_Q -> attn_7_6_O
+	attn_2_1_Q -> attn_2_1_O
+	attn_0_1_O -> attn_1_11_V
+	attn_11_0_K -> attn_11_0_O
+	attn_3_0_Q -> attn_3_0_O
+	attn_8_10_K -> attn_8_10_O
+	attn_1_4_O -> attn_3_1_Q
+	mlp_0 -> attn_3_5_K
+	attn_4_10_V -> attn_4_10_O
+	attn_2_8_Q -> attn_2_8_O
+	attn_0_5_O -> attn_1_4_V
+	attn_1_9_O -> attn_3_1_K
+	attn_0_2_V -> attn_0_2_O
+	input -> attn_0_11_Q
+	attn_1_4_O -> mlp_10
+	attn_1_2_K -> attn_1_2_O
+	attn_0_11_O -> attn_1_8_V
+	attn_1_9_O -> mlp_1
+	attn_0_7_O -> mlp_0
+	attn_0_7_O -> attn_1_3_V
+	attn_0_11_O -> attn_1_9_K
+	attn_0_7_Q -> attn_0_7_O
+	attn_5_0_O -> mlp_5
+	attn_8_10_O -> attn_10_8_Q
+	input -> attn_0_7_Q
+	attn_10_8_O -> attn_11_0_V
+	mlp_1 -> attn_10_7_K
+	input -> attn_1_4_K
+	attn_0_8_O -> attn_1_3_V
+	mlp_0 -> attn_11_8_V
+	input -> attn_1_1_Q
+	attn_0_9_O -> attn_10_7_K
+	attn_1_0_K -> attn_1_0_O
+	attn_1_8_O -> attn_11_0_K
+	mlp_1 -> attn_2_1_K
+	attn_0_3_Q -> attn_0_3_O
+	input -> attn_1_9_V
+	mlp_3 -> attn_5_3_K
+	attn_11_4_O -> output
+	attn_8_5_Q -> attn_8_5_O
+	attn_1_7_Q -> attn_1_7_O
+	attn_3_10_V -> attn_3_10_O
+	attn_1_5_O -> mlp_2
+	mlp_8 -> attn_11_10_K
+	input -> attn_1_7_V
+	attn_1_4_O -> attn_2_11_Q
+	mlp_1 -> attn_7_6_K
+	attn_3_10_K -> attn_3_10_O
+	attn_0_11_O -> attn_3_6_K
+	mlp_0 -> attn_10_7_Q
+	attn_4_6_Q -> attn_4_6_O
+	attn_1_2_O -> attn_2_11_K
+	attn_1_10_O -> attn_2_9_K
+	attn_0_10_O -> attn_1_8_V
+	mlp_0 -> attn_2_1_Q
+	mlp_2 -> attn_10_8_K
+	attn_0_11_O -> attn_1_0_V
+	attn_1_7_O -> attn_3_10_V
+	attn_1_3_O -> mlp_1
+	mlp_3 -> attn_10_7_K
+	mlp_0 -> mlp_6
+	attn_0_1_O -> attn_1_7_V
+	attn_3_1_Q -> attn_3_1_O
+	mlp_0 -> attn_11_3_V
+	mlp_1 -> attn_3_10_V
+	attn_0_9_K -> attn_0_9_O
+	mlp_1 -> attn_11_10_Q
+	attn_2_9_O -> mlp_2
+	attn_0_11_O -> attn_1_11_Q
+	attn_0_11_O -> attn_2_7_V
+	attn_2_11_O -> mlp_2
+	attn_4_10_O -> attn_5_0_K
+	attn_0_11_O -> attn_1_8_K
+	attn_5_10_O -> attn_10_7_V
+	mlp_2 -> attn_3_0_V
+	mlp_1 -> attn_10_8_K
+	attn_0_3_O -> mlp_0
+	mlp_3 -> attn_4_3_Q
+	attn_2_6_O -> attn_3_4_K
+	mlp_1 -> attn_2_7_Q
+	mlp_0 -> attn_1_5_V
+	mlp_0 -> attn_1_11_V
+	attn_1_9_O -> attn_2_6_Q
+	attn_0_11_O -> attn_1_10_V
+	attn_0_9_O -> attn_1_7_V
+	attn_11_8_V -> attn_11_8_O
+	attn_1_10_O -> attn_11_0_Q
+	attn_0_9_O -> attn_11_0_V
+	attn_10_7_O -> attn_11_10_V
+	attn_0_1_O -> attn_1_9_K
+	attn_1_4_O -> attn_10_7_Q
+	attn_1_11_O -> attn_2_6_V
+	attn_0_1_V -> attn_0_1_O
+	attn_0_8_O -> attn_1_4_Q
+	attn_1_9_Q -> attn_1_9_O
+	mlp_1 -> attn_8_10_K
+	attn_3_5_Q -> attn_3_5_O
+	input -> attn_0_7_K
+	mlp_1 -> attn_2_11_V
+	attn_1_2_O -> attn_5_0_V
+	mlp_0 -> attn_2_1_K
+	attn_0_11_O -> attn_1_3_Q
+	attn_0_4_O -> attn_1_5_V
+	attn_2_1_V -> attn_2_1_O
+	attn_0_11_K -> attn_0_11_O
+	attn_0_9_O -> attn_2_11_V
+	attn_0_11_O -> attn_1_0_Q
+	attn_5_9_O -> attn_10_8_Q
+	attn_6_6_V -> attn_6_6_O
+	attn_1_4_O -> attn_4_10_Q
+	mlp_0 -> attn_11_8_K
+	mlp_0 -> attn_1_2_Q
+	attn_0_7_O -> mlp_1
+	mlp_5 -> mlp_7
+	attn_1_3_O -> attn_3_0_Q
+	attn_2_4_K -> attn_2_4_O
+	attn_0_11_O -> mlp_3
+	attn_1_1_O -> mlp_1
+	attn_0_4_O -> attn_1_7_Q
+	attn_0_7_O -> mlp_2
+	attn_0_3_O -> attn_1_7_K
+	attn_1_3_O -> attn_3_6_Q
+	attn_1_6_Q -> attn_1_6_O
+	attn_10_8_V -> attn_10_8_O
+	attn_4_10_K -> attn_4_10_O
+	attn_4_3_O -> attn_5_10_Q
+	input -> attn_1_8_K
+	mlp_0 -> attn_5_5_K
+	attn_5_10_O -> mlp_5
+	attn_2_9_V -> attn_2_9_O
+	attn_0_1_Q -> attn_0_1_O
+	attn_1_3_O -> attn_2_11_Q
+	attn_0_8_O -> mlp_2
+	attn_1_9_O -> attn_2_1_Q
+	attn_0_11_Q -> attn_0_11_O
+	attn_4_6_O -> attn_5_0_Q
+	attn_6_6_O -> attn_10_8_Q
+	attn_11_8_O -> output
+	input -> attn_0_5_V
+	attn_1_2_Q -> attn_1_2_O
+	mlp_2 -> attn_3_5_V
+	attn_2_4_O -> attn_3_10_V
+	attn_2_4_V -> attn_2_4_O
+	mlp_1 -> output
+	attn_11_0_O -> output
+	attn_3_6_K -> attn_3_6_O
+	attn_1_5_Q -> attn_1_5_O
+	mlp_2 -> attn_10_7_V
+	mlp_0 -> attn_4_10_K
+	attn_3_4_O -> attn_4_8_Q
+	attn_0_2_O -> attn_1_6_V
+	attn_5_10_Q -> attn_5_10_O
+	mlp_0 -> attn_8_10_Q
+	attn_0_7_O -> attn_1_8_Q
+	attn_1_0_Q -> attn_1_0_O
+	attn_3_5_O -> attn_6_6_V
+	attn_1_9_O -> attn_3_10_Q
+	attn_1_7_O -> attn_3_5_V
+	attn_4_6_O -> attn_5_5_Q
+	attn_2_10_V -> attn_2_10_O
+	input -> attn_1_11_K
+	attn_4_3_V -> attn_4_3_O
+	attn_4_6_V -> attn_4_6_O
+	attn_1_4_K -> attn_1_4_O
+	mlp_7 -> mlp_8
+	attn_1_3_O -> attn_4_6_Q
+	attn_0_11_O -> attn_1_7_K
+	attn_2_7_O -> mlp_2
+	attn_2_6_Q -> attn_2_6_O
+	mlp_0 -> attn_2_8_Q
+	mlp_0 -> attn_3_0_V
+	attn_5_0_V -> attn_5_0_O
+	mlp_1 -> attn_2_9_V
+	mlp_0 -> attn_1_8_V
+	attn_1_10_V -> attn_1_10_O
+	attn_1_7_V -> attn_1_7_O
+	attn_11_8_Q -> attn_11_8_O
+	attn_5_3_V -> attn_5_3_O
+	attn_1_7_O -> attn_11_3_K
+	mlp_2 -> attn_5_3_K
+	attn_3_10_Q -> attn_3_10_O
+	mlp_1 -> attn_11_4_K
+	attn_0_11_O -> attn_1_9_V
+	attn_0_1_O -> attn_1_6_V
+	mlp_2 -> mlp_3
+	mlp_2 -> mlp_5
+	input -> attn_0_4_V
+	mlp_3 -> attn_10_8_V
+	mlp_0 -> attn_1_1_V
+	attn_0_1_K -> attn_0_1_O
+	mlp_1 -> attn_4_6_K
+	attn_0_11_O -> attn_2_7_Q
+	attn_0_5_O -> attn_1_5_V
+	attn_5_5_K -> attn_5_5_O
+	attn_4_8_O -> attn_5_5_V
+	mlp_0 -> attn_1_2_V
+	attn_5_9_O -> attn_11_10_K
+	mlp_6 -> attn_10_8_Q
+	attn_1_0_O -> mlp_1
+	mlp_11 -> output
+	mlp_0 -> attn_2_4_V
+	mlp_0 -> attn_2_11_K
+	attn_5_3_O -> mlp_5
+	mlp_0 -> attn_3_6_K
+	attn_0_9_O -> attn_1_3_V
+	attn_11_10_K -> attn_11_10_O
+	input -> attn_1_4_V
+	attn_0_2_K -> attn_0_2_O
+	attn_2_6_O -> attn_5_9_K
+	attn_0_7_O -> attn_1_10_V
+	attn_11_0_Q -> attn_11_0_O
+	mlp_0 -> attn_1_0_V
+	attn_0_9_O -> attn_1_3_K
+	attn_5_5_V -> attn_5_5_O
+	mlp_0 -> attn_3_4_V
+	mlp_0 -> attn_3_5_V
+	attn_1_9_O -> attn_8_5_K
+	attn_1_8_O -> attn_4_8_Q
+	mlp_1 -> mlp_11
+	mlp_0 -> attn_10_7_V
+	mlp_3 -> attn_4_6_K
+	attn_0_9_O -> mlp_11
+	attn_0_1_O -> attn_1_7_K
+	mlp_2 -> attn_7_6_K
+	mlp_0 -> attn_1_8_K
+	mlp_1 -> attn_5_10_Q
+	attn_0_2_O -> attn_1_9_Q
+	attn_3_4_O -> attn_4_10_Q
+	attn_3_6_V -> attn_3_6_O
+	mlp_1 -> attn_5_9_Q
+	attn_3_0_O -> mlp_3
+	attn_8_10_Q -> attn_8_10_O
+	mlp_2 -> attn_5_5_V
+	attn_5_3_Q -> attn_5_3_O
+	attn_0_2_O -> mlp_1
+	attn_0_10_V -> attn_0_10_O
+	mlp_0 -> attn_1_10_V
+	attn_1_1_Q -> attn_1_1_O
+	mlp_2 -> attn_11_10_V
+	attn_0_9_V -> attn_0_9_O
+	attn_1_4_O -> attn_2_6_Q
+	attn_1_8_O -> attn_3_6_Q
+	attn_4_8_K -> attn_4_8_O
+	attn_10_7_O -> mlp_11
+	mlp_2 -> attn_3_10_V
+	input -> attn_0_10_V
+	attn_0_9_O -> attn_1_4_V
+	attn_1_8_V -> attn_1_8_O
+	input -> attn_1_9_Q
+	mlp_1 -> attn_4_8_K
+	attn_2_7_V -> attn_2_7_O
+	mlp_0 -> attn_1_3_Q
+	mlp_0 -> attn_1_0_Q
+	attn_1_3_Q -> attn_1_3_O
+	attn_0_2_Q -> attn_0_2_O
+	attn_0_8_O -> attn_1_5_V
+	mlp_3 -> attn_4_10_Q
+	attn_3_4_Q -> attn_3_4_O
+	attn_1_2_V -> attn_1_2_O
+	attn_0_2_O -> attn_1_8_Q
+	mlp_1 -> attn_5_0_Q
+	mlp_1 -> attn_2_7_K
+	mlp_1 -> attn_2_1_V
+	attn_2_10_O -> attn_5_0_K
+	attn_10_7_V -> attn_10_7_O
+	mlp_1 -> attn_2_6_K
+	attn_0_9_O -> attn_1_2_Q
+	mlp_0 -> mlp_3
+	attn_0_4_V -> attn_0_4_O
+	attn_0_3_V -> attn_0_3_O
+	attn_0_3_O -> attn_1_3_V
+	attn_5_9_K -> attn_5_9_O
+	mlp_1 -> attn_2_9_K
+	attn_0_11_O -> attn_1_6_Q
+	input -> attn_0_3_V
+	attn_5_9_V -> attn_5_9_O
+	attn_1_8_K -> attn_1_8_O
+	mlp_1 -> attn_3_1_K
+	mlp_2 -> attn_6_6_V
+	attn_0_9_O -> attn_1_6_K
+	attn_5_9_O -> attn_7_6_V
+	input -> attn_1_8_Q
+	attn_1_7_O -> mlp_1
+	attn_2_8_V -> attn_2_8_O
+	attn_2_8_K -> attn_2_8_O
+	attn_1_1_V -> attn_1_1_O
+	attn_1_5_K -> attn_1_5_O
+	mlp_3 -> attn_11_8_Q
+	attn_10_8_Q -> attn_10_8_O
+	attn_0_9_O -> mlp_1
+	mlp_1 -> attn_11_10_K
+	attn_11_3_V -> attn_11_3_O
+	mlp_3 -> attn_5_0_Q
+	attn_0_9_O -> attn_11_10_K
+	attn_0_9_O -> mlp_2
+	mlp_1 -> attn_2_4_K
+	mlp_1 -> attn_11_0_Q
+	attn_4_8_V -> attn_4_8_O
+	attn_2_1_K -> attn_2_1_O
+	input -> attn_0_3_K
+	attn_3_10_O -> attn_4_8_V
+	attn_3_1_K -> attn_3_1_O
+	attn_1_11_O -> attn_10_7_K
+	attn_1_4_O -> attn_2_4_Q
+	attn_11_4_K -> attn_11_4_O
+	mlp_0 -> attn_1_7_K
+	attn_0_3_O -> attn_1_5_V
+	mlp_0 -> attn_7_6_K
+	attn_4_3_Q -> attn_4_3_O
+	input -> attn_0_1_Q
+	attn_1_8_O -> attn_5_10_Q
+	attn_2_11_Q -> attn_2_11_O
+	attn_1_0_O -> attn_2_10_V
+	attn_1_6_O -> attn_3_4_V
+	mlp_1 -> attn_3_0_K
+	attn_4_8_Q -> attn_4_8_O
+	mlp_2 -> attn_10_8_V
+	attn_0_9_O -> attn_1_8_Q
+	mlp_0 -> attn_11_10_V
+	attn_0_9_O -> attn_1_8_V
+	mlp_0 -> attn_1_4_K
+	attn_1_5_O -> attn_2_9_V
+	mlp_3 -> attn_4_10_K
+	attn_0_10_O -> attn_11_3_K
+	attn_0_10_O -> attn_1_11_K
+	mlp_2 -> attn_3_5_K
+	mlp_0 -> attn_11_10_Q
+	attn_1_4_V -> attn_1_4_O
+	attn_0_3_O -> attn_1_1_K
+	attn_1_10_O -> attn_3_6_K
+	attn_2_11_K -> attn_2_11_O
+	mlp_3 -> attn_11_10_K
+	attn_0_2_O -> attn_1_3_V
+	mlp_0 -> attn_10_8_K
+	attn_1_2_O -> attn_2_10_K
+	attn_1_9_O -> mlp_3
+	attn_0_11_O -> attn_5_9_Q
+	mlp_0 -> attn_8_5_K
+	mlp_0 -> attn_2_7_Q
+	attn_4_6_K -> attn_4_6_O
+	mlp_0 -> attn_1_7_V
+	mlp_1 -> attn_3_0_Q
+	attn_2_7_K -> attn_2_7_O
+	mlp_2 -> mlp_8
+	mlp_1 -> attn_3_6_Q
+	mlp_1 -> attn_3_5_K
+	attn_1_7_O -> attn_2_11_Q
+	attn_0_8_O -> attn_1_9_K
+	attn_0_11_O -> attn_1_4_V
+	attn_5_5_Q -> attn_5_5_O
+	input -> attn_0_3_Q
+	mlp_2 -> attn_11_3_K
+	input -> mlp_0
+	input -> attn_1_3_V
+	mlp_0 -> attn_8_10_K
+	mlp_1 -> attn_4_3_K
+	attn_11_8_K -> attn_11_8_O
+	attn_1_10_O -> attn_3_4_Q
+	attn_5_10_V -> attn_5_10_O
+	attn_4_3_K -> attn_4_3_O
+	input -> attn_0_1_K
+	mlp_0 -> attn_2_11_V
+	input -> attn_0_11_V
+	attn_1_3_K -> attn_1_3_O
+	attn_1_8_Q -> attn_1_8_O
+	attn_2_7_Q -> attn_2_7_O
+	attn_1_3_O -> attn_5_0_V
+	attn_1_4_O -> attn_11_10_Q
+	attn_2_11_O -> attn_5_3_V
+	attn_0_2_O -> attn_1_5_V
+	attn_0_2_O -> attn_1_11_V
+	attn_1_6_V -> attn_1_6_O
+	input -> attn_0_1_V
+	input -> attn_0_8_V
+	attn_1_9_K -> attn_1_9_O
+	attn_1_8_O -> attn_11_10_K
+	attn_1_8_O -> mlp_2
+	attn_0_11_O -> attn_1_6_K
+	attn_3_4_V -> attn_3_4_O
+	attn_1_2_O -> attn_2_9_Q
+	input -> attn_0_2_V
+	attn_2_6_K -> attn_2_6_O
+	mlp_2 -> attn_6_6_K
+	attn_0_7_O -> attn_2_9_V
+	mlp_3 -> attn_5_10_V
+	attn_0_11_O -> mlp_1
+	input -> attn_0_9_V
+	attn_7_6_O -> attn_10_8_Q
+	mlp_1 -> attn_11_4_V
+	mlp_1 -> attn_2_1_Q
+	attn_0_3_O -> attn_1_5_Q
+	attn_0_11_O -> mlp_2
+	attn_1_7_O -> attn_2_10_K
+	mlp_1 -> attn_7_6_Q
+	attn_3_1_O -> mlp_3
+	attn_0_11_O -> attn_2_4_K
+	attn_5_0_Q -> attn_5_0_O
+	mlp_1 -> attn_6_6_K
+	attn_11_0_V -> attn_11_0_O
+	attn_10_7_K -> attn_10_7_O
+	mlp_3 -> attn_11_8_V
+	mlp_0 -> attn_8_10_V
+	mlp_1 -> attn_2_6_V
+	mlp_3 -> attn_4_6_Q
+	input -> attn_0_11_K
+	attn_1_0_V -> attn_1_0_O
+	attn_1_10_O -> attn_2_1_K
+	mlp_0 -> attn_2_9_V
+	attn_0_8_K -> attn_0_8_O
+	attn_1_4_Q -> attn_1_4_O
+	mlp_2 -> attn_4_8_K
+	attn_0_9_O -> attn_2_4_Q
+	attn_1_6_O -> attn_3_10_V
+	mlp_0 -> mlp_8
+	attn_0_2_O -> mlp_2
+	attn_0_10_O -> attn_1_0_K
+	attn_2_6_V -> attn_2_6_O
+	attn_0_1_O -> attn_1_1_K
+}
