@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/lustre06/project/6070308/leiyu/circuit-discovery/oqa/oqa_pruning.py", line 300, in <module>
+    main(args)
+  File "/lustre06/project/6070308/leiyu/circuit-discovery/oqa/oqa_pruning.py", line 39, in main
+    ds_dict = pickle.load(open(join(args.data_dir, f'pararel_ds_dict_{rel_id}.p'), 'rb'))
+FileNotFoundError: [Errno 2] No such file or directory: '/home/leiyu/projects/def-yangxu/leiyu/circuit-discovery/data/pararel_ds_dict_P413.p'

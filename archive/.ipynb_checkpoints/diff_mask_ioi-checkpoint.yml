@@ -1,0 +1,16 @@
+temperature_weight: 0.01
+temperature_edge: 1.0
+mask_logit_init: 1.0
+batch_size: 64
+train_epochs_weight: 1000
+train_epochs_edge: 500
+lr_weight: 0.1
+lr_edge: 0.01
+lambda_sparse_weight: 1
+lambda_sparse_edge: 0.001
+# lambda_complete: 1
+save_every: 5
+model_name: gpt2
+model_dir: /home/leiyu/scratch/lm_circuit/models/
+data_dir: /home/leiyu/scratch/lm_circuit/data/
+resume_epoch: 0

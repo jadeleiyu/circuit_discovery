@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
 import argparse
 
-from ioi_dataset import *
+from oqa_dataset import *
 
 
 # sparsity loss weight scheduling function
@@ -36,52 +36,43 @@ def schedule_epoch_lambda(epoch, lambda_0, max_times=100., min_times=0.001,
 
 
 def compute_faith_loss(batch_logits_masked, batch_inputs):
-    # batch_logits: (B, seq_len, vocab_size)
+    # batch_logits: (B, seq_len, cap_vocab_size)
     batch_seq_lens = batch_inputs['seq_lens']
     batch_size = batch_logits_masked.shape[0]
-    log_probs_target_unmasked = batch_inputs['full_model_target_log_probs']  # (B, 2
-    # print(f'batch_logits_masked: {batch_logits_masked.shape}')
-    # print(f'log_probs_target_unmasked: {log_probs_target_unmasked.shape}')
-    # print()
-    # log_probs_target_unmasked = F.log_softmax(logits_gb_unmasked, -1)  # (B, 2)
+    log_probs_target_unmasked = batch_inputs['full_model_target_log_probs'].to(batch_logits_masked.device)  # (B, cap_vocab_size)
+    # batch_labels = batch_inputs['full_model_pred_label'].to(batch_logits_masked.device) # (B)
+    batch_labels = batch_inputs['label'].to(batch_logits_masked.device)
 
-    logits_target_good_masked = batch_logits_masked[torch.arange(batch_size), batch_seq_lens - 1, batch_inputs['target good']]
-    logits_target_bad_masked = batch_logits_masked[torch.arange(batch_size), batch_seq_lens - 1, batch_inputs['target bad']]
-    logits_gb_masked = torch.stack([logits_target_good_masked, logits_target_bad_masked], -1)  # (B,2)
-    # log_probs_target_masked = F.log_softmax(batch_logits_masked[:, batch_seq_lens - 1], -1)  # (B, vocab_size)
-    log_probs_target_masked = F.log_softmax(logits_gb_masked, -1)  # (B, 2)
-
-    # batch_labels = torch.zeros(batch_size).long().to(logits_gb.device)
-    batch_labels = batch_inputs['full_model_pred_label'].to(logits_gb_masked.device)
-    batch_pred = (logits_gb_masked[:, 0] < logits_gb_masked[:, 1]).long()
-    batch_faith_loss = F.cross_entropy(logits_gb_masked, batch_labels)
-    batch_kl = F.kl_div(
-        log_probs_target_unmasked.to(log_probs_target_masked.device), 
-        log_probs_target_masked,
-        log_target=True
-    ).cpu()
-    batch_n_correct = (batch_labels == batch_pred).sum().cpu().item()
+    batch_logits_masked_target = batch_logits_masked[torch.arange(batch_size), batch_seq_lens - 1]  # (B, cap_vocab_size)
+    
+    batch_faith_loss = F.cross_entropy(batch_logits_masked_target, batch_labels)
+    with torch.no_grad():
+        batch_kl = F.kl_div(
+            log_probs_target_unmasked.to(batch_logits_masked.device), 
+            F.log_softmax(batch_logits_masked_target, -1),
+            log_target=True
+        ).cpu()
+        batch_pred = torch.argsort(batch_logits_masked_target, -1)[:, -1]  # (B)
+        batch_n_correct = (batch_labels == batch_pred).sum().cpu().item()
 
     return batch_faith_loss, batch_kl, batch_n_correct
 
 
-def compute_complete_loss(batch_logits, batch_inputs):
-    # batch_logits: (B, seq_len, vocab_size)
+def compute_complete_loss(batch_logits_masked, batch_inputs):
+    # batch_logits: (B, seq_len, cap_vocab_size)
     batch_seq_lens = batch_inputs['seq_lens']
-    batch_size = batch_logits.shape[0]
+    batch_size = batch_logits_masked.shape[0]
 
-    logits_target_good = batch_logits[torch.arange(batch_size), batch_seq_lens - 1, batch_inputs['target good']]
-    logits_target_bad = batch_logits[torch.arange(batch_size), batch_seq_lens - 1, batch_inputs['target bad']]
-    logits_gb = torch.stack([logits_target_good, logits_target_bad], -1)  # (B,2)
+    batch_logits_masked_target = batch_logits_masked[torch.arange(batch_size), batch_seq_lens - 1]  # (B, cap_vocab_size)
 
-    batch_probs_uniform = torch.ones(logits_gb.shape).to(logits_gb.device) * 0.5
-    batch_complete_loss = nn.functional.cross_entropy(logits_gb, batch_probs_uniform)
+    batch_probs_uniform = torch.ones(batch_logits_masked_target.shape).to(batch_logits_masked_target.device) * (1. / batch_logits_masked_target.shape[-1])
+    batch_complete_loss = nn.functional.cross_entropy(batch_logits_masked_target, batch_probs_uniform)
 
-    return batch_complete_loss, logits_gb
+    return batch_complete_loss, batch_logits_masked_target
 
 
 @torch.no_grad()
-def eval_model(model, eval_dl, tokenizer, device, 
+def eval_model(model, eval_dl, tokenizer, device, capital_vocab_idx,
                use_weight_mask=True, use_edge_mask=True, reverse=False):
     
     model.eval()
@@ -104,7 +95,7 @@ def eval_model(model, eval_dl, tokenizer, device,
 
     for batch in eval_dl:
         batch_inputs = prepare_batch_inputs(batch, tokenizer)       
-        batch_logits_masked = model(batch_inputs['input_ids'].to(device))[0]  # (B, seq_len, vocab_size)
+        batch_logits_masked = model(batch_inputs['input_ids'].to(device))[0][:,:,capital_vocab_idx]  # (B, seq_len, cap_vocab_size)
         batch_faith_loss, batch_kl, batch_n_correct = compute_faith_loss(batch_logits_masked, batch_inputs)
         
         # print(batch_logits_gb)
@@ -124,8 +115,5 @@ def eval_model(model, eval_dl, tokenizer, device,
         'kl': torch.stack(kls).mean().item(),
         'faith_loss': torch.stack(faith_losses).mean().item(),
         'weight_density': weight_density,
-        'edge_density': edge_density,
-        'n_correct': correct,
-        'total': total
+        'edge_density': edge_density
     }
-

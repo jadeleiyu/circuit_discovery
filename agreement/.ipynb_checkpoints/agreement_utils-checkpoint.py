@@ -11,19 +11,12 @@ import torch.nn.functional as F
 from datasets import load_from_disk
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
-import argparse
 
-from ioi_dataset import *
+from agreement_dataset import prepare_batch_inputs
 
 
-# sparsity loss weight scheduling function
-# now using a linear scheduler by first increasing lambda_sparse from lambda_0 to max_times * lambda_0 in n_epoch_warmup epochs,
-# and then reducing lambda_sparse to min_times * lambda_0 in another n_epoch_cooldown epochs
-# the current ROT is to first heavily penalize edge density through high lr and lambda_sparse
-# and then decrease lambda_sparse to recover essential edges for IOI
-# therefore evaluation acc will first drop to near/below random and then go back to near-perfect
-def schedule_epoch_lambda(epoch, lambda_0, max_times=100., min_times=0.001,
-                          n_epoch_warmup=20, n_epoch_cooldown=20):
+def schedule_epoch_lambda(epoch, lambda_0, max_times=1., min_times=1., 
+                          n_epoch_warmup=0, n_epoch_cooldown=0):
 
     if epoch < n_epoch_warmup:
         return lambda_0  + lambda_0 * (max_times - 1) * epoch / n_epoch_warmup
@@ -124,8 +117,7 @@ def eval_model(model, eval_dl, tokenizer, device,
         'kl': torch.stack(kls).mean().item(),
         'faith_loss': torch.stack(faith_losses).mean().item(),
         'weight_density': weight_density,
-        'edge_density': edge_density,
-        'n_correct': correct,
-        'total': total
+        'edge_density': edge_density
     }
 
+    

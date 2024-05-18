@@ -1,0 +1,17 @@
+temperature: 0.01
+mask_logit_init: 1.0
+batch_size: 64
+train_epochs_weight: 1000
+train_epochs_edge: 100
+lr_weight: 0.1
+lr_edge: 0.1
+lambda_sparse_weight: 0.01
+lambda_sparse_edge: 1
+lambda_complete: 1
+save_every: 5
+task_name: distractor_agreement_relative_clause
+# task_name: anaphor_gender_agreement
+model_name: gpt2-small
+model_dir: /home/leiyu/scratch/lm_circuit/models/
+data_dir: /home/leiyu/scratch/lm_circuit/data/
+resume_epoch: 0
