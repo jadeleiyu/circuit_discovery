@@ -40,3 +40,8 @@ Thumbs.db
 #########################
 *.pt
 *.npy
+
+# slurm output files
+#########################
+*.out
+*.err
