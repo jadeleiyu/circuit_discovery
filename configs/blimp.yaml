@@ -1,0 +1,30 @@
+model_dir_path: /home/t-jniu/tl_model_weights/
+task_type: blimp
+
+batch_size: 128
+
+weight_hparams:
+  gs_temp: 0.01
+  logits_init: 0.0
+  lr: 0.1
+  lambda_sparse_init: 1.0
+  lambda_complete_init: 1.0
+  min_times_lambda_sparse: 1.
+  max_times_lambda_sparse: 1000.
+
+  train_epochs: 300
+  n_epoch_warmup_lambda_sparse: 500
+  n_epoch_cooldown_lambda_sparse: 1
+
+edge_hparams:
+  gs_temp: 1.0
+  logits_init: 0.0
+  lr: 0.1
+  lambda_sparse_init: 1.0
+  lambda_complete_init: 1.0
+  min_times_lambda_sparse: 0.01
+  max_times_lambda_sparse: 100.
+
+  train_epochs: 100
+  n_epoch_warmup_lambda_sparse: 20
+  n_epoch_cooldown_lambda_sparse: 20

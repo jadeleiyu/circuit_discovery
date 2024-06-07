@@ -1,8 +1,0 @@
-task name: oqa
-pararel relation: P103
-prune weight: True
-use weight masks: True
-prune edge: False
-optimize weight completeness: True
-optimize edge completeness: True
-Epoch 0. mean pruned model eval accuracy: 1.00,mean eval kl-div: -0.0000,weight density: 1.0000,edge density: 1.0000

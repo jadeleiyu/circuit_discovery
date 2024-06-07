@@ -1,4 +1,0 @@
-Weight pruning epoch 114, discovered circuit accuracy: 1.0000, complementary circuit accuracy: 0.0000, KL: 0.0040, weight density: 0.0204, edge density: 1.0000
-
-
-
