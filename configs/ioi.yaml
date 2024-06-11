@@ -1,29 +1,30 @@
 model_dir_path: /home/t-jniu/tl_model_weights/
 task_type: ioi
 
-gs_temp_weight: 0.01
-gs_temp_edge: 1.0
-logits_w_init: 0.0
-logits_e_init: 0.0
-lr_weight: 0.1
-lr_edge: 0.1
-lambda_sparse_weight_init: 1.0
-lambda_sparse_edge_init: 1.0
-lambda_complete_weight_init: 1.0
-lambda_complete_edge_init: 1.0
-max_times_lambda_sparse_weight: 1000.
-min_times_lambda_sparse_weight: 1.
-max_times_lambda_sparse_edge: 100.
-min_times_lambda_sparse_edge: 0.01
+batch_size: 128
 
-n_ioi_data: 1280
-ds_idx: 0
-batch_size: 32
-train_epochs_weight: 300
-train_epochs_edge: 100
-n_epoch_warmup_lambda_sparse_weight: 500
-n_epoch_cooldown_lambda_sparse_weight: 1
-n_epoch_warmup_lambda_sparse_edge: 20
-n_epoch_cooldown_lambda_sparse_edge: 20
-resume_epoch_w: 0
-resume_epoch_e: 0
+weight_hparams:
+  gs_temp: 0.01
+  logits_init: 0.0
+  lr: 0.1
+  lambda_sparse_init: 1.0
+  lambda_complete_init: 1.0
+  min_times_lambda_sparse: 1.
+  max_times_lambda_sparse: 1000.
+
+  train_epochs: 300
+  n_epoch_warmup_lambda_sparse: 500
+  n_epoch_cooldown_lambda_sparse: 1
+
+edge_hparams:
+  gs_temp: 1.0
+  logits_init: 0.0
+  lr: 0.1
+  lambda_sparse_init: 1.0
+  lambda_complete_init: 1.0
+  min_times_lambda_sparse: 0.01
+  max_times_lambda_sparse: 100.
+
+  train_epochs: 100
+  n_epoch_warmup_lambda_sparse: 20
+  n_epoch_cooldown_lambda_sparse: 20

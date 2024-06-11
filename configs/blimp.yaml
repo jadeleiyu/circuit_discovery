@@ -1,7 +1,7 @@
 model_dir_path: /home/t-jniu/tl_model_weights/
 task_type: blimp
 
-batch_size: 128
+batch_size: 16
 
 weight_hparams:
   gs_temp: 0.01

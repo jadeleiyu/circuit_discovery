@@ -6,10 +6,11 @@ from tqdm.auto import tqdm
 from pprint import pprint
 
 import torch
-import transformer_lens
 from transformers import AutoTokenizer
+import transformer_lens
+from transformer_lens.loading_from_pretrained import get_pretrained_model_config
 
-from .circuit_gpt import CircuitGPTConfig, CircuitGPT
+from .circuit_lm import CircuitTransformer
 from .data import setup_task
 from .evaluation import compute_complete_loss, compute_faith_loss
 from .utils import schedule_epoch_lambda
@@ -42,21 +43,18 @@ class DiscoGP:
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
-        circuit_gpt_config = CircuitGPTConfig(
+        self.model = CircuitTransformer.from_pretrained(self.args.model_name,
             debug=False,
             gs_temp_weight=self.configs.weight_hparams.gs_temp,
             gs_temp_edge=self.configs.edge_hparams.gs_temp,
-        )
-        circuit_gpt = CircuitGPT(circuit_gpt_config)
-        model_path = self.configs.model_dir_path / self.args.model_name
-        gpt_weights = torch.load(model_path / 'model_weights.pt') 
-        circuit_gpt.load_pretrained_weight(gpt_weights)
-
-        self.model = circuit_gpt.to(self.device)
+            use_weight_masks=self.args.use_weight_masks,
+            use_edge_masks=self.args.use_edge_masks,
+        ).to(self.device)
 
     def setup_task(self):
         self.dls = setup_task(self)
 
+    @torch.no_grad
     def evaluate(self, dl=None, reverse=False, use_weight_mask=True, use_edge_mask=True):
         if dl is None:
             dl = self.dls.eval
@@ -78,7 +76,7 @@ class DiscoGP:
         kls = []
         faith_losses = []
 
-        for batch_inputs in dl:
+        for batch_inputs in tqdm(dl):
 
             batch_logits_masked = self.model(batch_inputs['input_ids'].to(self.device))[0]
             eval_results = self.compute_loss(batch_logits_masked, batch_inputs)
@@ -115,10 +113,10 @@ class DiscoGP:
         return faith_results
 
     def search_circuit(self):
-        if self.args.prune_weights:
+        if self.args.use_weight_masks:
             self.run_prune('w')
 
-        if self.args.prune_edges:
+        if self.args.use_edge_masks:
             self.run_prune('e')
 
     def run_prune(self, mode):
@@ -150,7 +148,7 @@ class DiscoGP:
             )
             lambda_complete = schedule_epoch_lambda(epoch, hparams.lambda_complete_init)
 
-            for batch_inputs in self.dls.train:
+            for batch_inputs in tqdm(self.dls.train):
 
                 # weight pruning
                 if mode == 'w':

@@ -1,13 +1,32 @@
-import pickle
-import einops
-from fancy_einsum import einsum
-import torch
-import torch.nn as nn
+from typing import Dict, List, NamedTuple, Optional, Tuple, Union, cast, overload
+from typing_extensions import Literal
+
+from .circuit_lm_config import get_config
+
 import numpy as np
 import math
-import tqdm.auto as tqdm
+
+import torch
+import torch.nn as nn
 import torch.nn.functional as F
 
+import einops
+from fancy_einsum import einsum
+
+from transformers import AutoModelForCausalLM, AutoTokenizer, PreTrainedTokenizerBase
+from transformer_lens.components import (
+    Embed,
+    PosEmbed,
+    RMSNorm,
+    RMSNormPre,
+    LayerNorm,
+    LayerNormPre,
+    Unembed,
+    GatedMLP,
+    MLP,
+    MoE,
+)
+from transformer_lens import HookedTransformer
 
 def gumbel_sigmoid(logits, gs_temp=1., eps=1e-10):
     uniform = logits.new_empty([2]+list(logits.shape)).uniform_(0, 1)
@@ -16,82 +35,22 @@ def gumbel_sigmoid(logits, gs_temp=1., eps=1e-10):
     res = ((res > 0.5).type_as(res) - res).detach() + res
     return res
 
-class LayerNorm(nn.Module):
-    def __init__(self, cfg):
-        super().__init__()
-        self.cfg = cfg
-        self.w = nn.Parameter(torch.ones(cfg.d_model))
-        self.b = nn.Parameter(torch.zeros(cfg.d_model))
-
-    def forward(self, residual, parallel=False):
-        # residual: [batch, position, n_heads, d_model]
-        if self.cfg.debug: print("Residual:", residual.shape)
-        if parallel:
-            pattern = "batch position n_heads d_model -> batch position n_heads 1"
-        else:
-            pattern = "batch position d_model -> batch position 1"
-        residual = residual - einops.reduce(residual, pattern, "mean")
-        # Calculate the variance, square root it. Add in an epsilon to prevent divide by zero.
-        scale = (einops.reduce(residual.pow(2), pattern, "mean") + self.cfg.layer_norm_eps).sqrt()
-        normalized = residual / scale
-        normalized = normalized * self.w + self.b
-        if self.cfg.debug: print("Normalized:", residual.shape)
-        return normalized
-
-"""## Embedding
-
-Basically a lookup table from tokens to residual stream vectors.
-"""
-
-class Embed(nn.Module):
-    def __init__(self, cfg):
-        super().__init__()
-        self.cfg = cfg
-        self.W_E = nn.Parameter(torch.empty((cfg.d_vocab, cfg.d_model)))
-        nn.init.normal_(self.W_E, std=self.cfg.init_range)
-
-    def forward(self, tokens):
-        # tokens: [batch, position]
-        if self.cfg.debug: print("Tokens:", tokens.shape)
-        embed = self.W_E[tokens, :] # [batch, position, d_model]
-        if self.cfg.debug: print("Embeddings:", embed.shape)
-        return embed
-
-"""## Positional Embedding"""
-
-class PosEmbed(nn.Module):
-    def __init__(self, cfg):
-        super().__init__()
-        self.cfg = cfg
-        self.W_pos = nn.Parameter(torch.empty((cfg.n_ctx, cfg.d_model)))
-        nn.init.normal_(self.W_pos, std=self.cfg.init_range)
-
-    def forward(self, tokens):
-        # tokens: [batch, position]
-        if self.cfg.debug: print("Tokens:", tokens.shape)
-        pos_embed = self.W_pos[:tokens.size(1), :] # [position, d_model]
-        pos_embed = einops.repeat(pos_embed, "position d_model -> batch position d_model", batch=tokens.size(0))
-        if self.cfg.debug: print("pos_embed:", pos_embed.shape)
-        return pos_embed
-
-"""## Attention"""
-
 class Attention(nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.cfg = cfg
         self.W_Q = nn.Parameter(torch.empty((cfg.n_heads, cfg.d_model, cfg.d_head)))
-        nn.init.normal_(self.W_Q, std=self.cfg.init_range)
+        # nn.init.normal_(self.W_Q, std=self.cfg.init_range)
         self.b_Q = nn.Parameter(torch.zeros((cfg.n_heads, cfg.d_head)))
         self.W_K = nn.Parameter(torch.empty((cfg.n_heads, cfg.d_model, cfg.d_head)))
-        nn.init.normal_(self.W_K, std=self.cfg.init_range)
+        # nn.init.normal_(self.W_K, std=self.cfg.init_range)
         self.b_K = nn.Parameter(torch.zeros((cfg.n_heads, cfg.d_head)))
         self.W_V = nn.Parameter(torch.empty((cfg.n_heads, cfg.d_model, cfg.d_head)))
-        nn.init.normal_(self.W_V, std=self.cfg.init_range)
+        # nn.init.normal_(self.W_V, std=self.cfg.init_range)
         self.b_V = nn.Parameter(torch.zeros((cfg.n_heads, cfg.d_head)))
 
         self.W_O = nn.Parameter(torch.empty((cfg.n_heads, cfg.d_head, cfg.d_model)))
-        nn.init.normal_(self.W_O, std=self.cfg.init_range)
+        # nn.init.normal_(self.W_O, std=self.cfg.init_range)
         self.b_O = nn.Parameter(torch.zeros((cfg.d_model)))
 
         self.register_buffer("IGNORE", torch.tensor(-1e5, dtype=torch.float32, device="cuda"))
@@ -122,56 +81,44 @@ class Attention(nn.Module):
         attn_scores.masked_fill_(mask, self.IGNORE)
         return attn_scores
 
-"""## MLP"""
-class MLP(nn.Module):
-    def __init__(self, cfg):
-        super().__init__()
-        self.cfg = cfg
-        self.W_in = nn.Parameter(torch.empty((cfg.d_model, cfg.d_mlp)))
-        nn.init.normal_(self.W_in, std=self.cfg.init_range)
-        self.b_in = nn.Parameter(torch.zeros((cfg.d_mlp)))
-        self.W_out = nn.Parameter(torch.empty((cfg.d_mlp, cfg.d_model)))
-        nn.init.normal_(self.W_out, std=self.cfg.init_range)
-        self.b_out = nn.Parameter(torch.zeros((cfg.d_model)))
-
-        if self.cfg.act_fn == "relu":
-            self.act_fn = F.relu
-        elif self.cfg.act_fn == "gelu":
-            self.act_fn = F.gelu
-        elif self.cfg.act_fn == "silu":
-            self.act_fn = F.silu
-        elif self.cfg.act_fn == "gelu_new":
-            self.act_fn = gelu_new
-        elif self.cfg.act_fn == "gelu_fast":
-            self.act_fn = gelu_fast
-        elif self.cfg.act_fn == "solu_ln":
-            self.act_fn = solu
-            # Hook taken between activation and layer norm
-            self.hook_mid = HookPoint()  # [batch, pos, d_mlp]
-            if self.cfg.normalization_type == "LN":
-                self.ln = LayerNorm(self.cfg, self.cfg.d_mlp)
-            else:
-                self.ln = LayerNormPre(self.cfg)
-
-    def forward(self, normalized_resid_mid):
-        # normalized_resid_mid: [batch, position, d_model]
-        if self.cfg.debug: print("Normalized_resid_mid:", normalized_resid_mid.shape)
-        pre = einsum("batch position d_model, d_model d_mlp -> batch position d_mlp", normalized_resid_mid, self.W_in) + self.b_in
-        post = torch.nn.functional.gelu(pre)
-        mlp_out = einsum("batch position d_mlp, d_mlp d_model -> batch position d_model", post, self.W_out) + self.b_out
-        return mlp_out
-
-"""## Transformer Block"""
-
 class TransformerBlock(nn.Module):
     def __init__(self, cfg, prev_layers: int):
         super().__init__()
         self.cfg = cfg
 
-        self.ln1 = LayerNorm(cfg)
+        if self.cfg.normalization_type == "LN":
+            self.ln1 = LayerNorm(cfg)
+            if not self.cfg.attn_only:
+                self.ln2 = LayerNorm(cfg)
+        elif self.cfg.normalization_type == "LNPre":
+            # We've folded in LayerNorm weights, so just need the center + scale parts
+            self.ln1 = LayerNormPre(cfg)
+            if not self.cfg.attn_only:
+                self.ln2 = LayerNormPre(cfg)
+        elif self.cfg.normalization_type == "RMS":
+            self.ln1 = RMSNorm(cfg)
+            if not self.cfg.attn_only:
+                self.ln2 = RMSNorm(cfg)
+        elif self.cfg.normalization_type == "RMSPre":
+            self.ln1 = RMSNormPre(cfg)
+            if not self.cfg.attn_only:
+                self.ln2 = RMSNormPre(cfg)
+        elif self.cfg.normalization_type is None:
+            self.ln1 = nn.Identity()
+            if not self.cfg.attn_only:
+                self.ln2 = nn.Identity()
+        else:
+            logging.warning(f"Invalid normalization_type passed in {self.cfg.normalization_type}")
+
         self.attn = Attention(cfg)
-        self.ln2 = LayerNorm(cfg)
-        self.mlp = MLP(cfg)
+
+        if not self.cfg.attn_only:
+            if self.cfg.num_experts:
+                self.mlp = MoE(cfg)
+            elif self.cfg.gated_mlp:
+                self.mlp = GatedMLP(cfg)
+            else:
+                self.mlp = MLP(cfg)
 
         for p in self.parameters():
             p.requires_grad = False
@@ -220,9 +167,9 @@ class TransformerBlock(nn.Module):
         masked_residuals_k = einsum("batch position prev_head_idx d_model, prev_head_idx n_heads -> batch position n_heads d_model", resid_pre, sampled_edge_mask_attentions_k)
         masked_residuals_v = einsum("batch position prev_head_idx d_model, prev_head_idx n_heads -> batch position n_heads d_model", resid_pre, sampled_edge_mask_attentions_v)
 
-        normalized_resid_pre_q = self.ln1(masked_residuals_q, parallel=True)
-        normalized_resid_pre_k = self.ln1(masked_residuals_k, parallel=True)
-        normalized_resid_pre_v = self.ln1(masked_residuals_v, parallel=True)
+        normalized_resid_pre_q = self.ln1(masked_residuals_q)
+        normalized_resid_pre_k = self.ln1(masked_residuals_k)
+        normalized_resid_pre_v = self.ln1(masked_residuals_v)
 
         attn_out = self.attn(normalized_resid_pre_q, normalized_resid_pre_k, normalized_resid_pre_v)
         residual = torch.cat((resid_pre, attn_out), dim=2)
@@ -237,39 +184,48 @@ class TransformerBlock(nn.Module):
 
         return residual
 
-"""## Unembedding"""
-
-class Unembed(nn.Module):
+class CircuitTransformer(nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.cfg = cfg
-        self.W_U = nn.Parameter(torch.empty((cfg.d_model, cfg.d_vocab)))
-        nn.init.normal_(self.W_U, std=self.cfg.init_range)
-        self.b_U = nn.Parameter(torch.zeros((cfg.d_vocab), requires_grad=False))
-    
-    def forward(self, normalized_resid_final):
-        # normalized_resid_final [batch, position, d_model]
-        if self.cfg.debug: print("Normalized_resid_final:", normalized_resid_final.shape)
-        logits = einsum("batch position d_model, d_model d_vocab -> batch position d_vocab", normalized_resid_final, self.W_U) + self.b_U
-        return logits
 
+        self.embed = Embed(self.cfg)
 
-"""## Full CircuitGPT with differentiable weight and edge masking"""
+        if self.cfg.positional_embedding_type != "rotary":
+            self.pos_embed = PosEmbed(self.cfg)
 
-class CircuitGPT(nn.Module):
-    def __init__(self, cfg):
-        super().__init__()
-        self.cfg = cfg
-        self.embed = Embed(cfg)
-        self.pos_embed = PosEmbed(cfg)
-        self.ln_final = LayerNorm(cfg)
-        self.unembed = Unembed(cfg)
-
-        self.blocks = nn.ModuleList([TransformerBlock(cfg, i) for i in range(cfg.n_layers)])
+        self.blocks = nn.ModuleList(
+            [TransformerBlock(self.cfg, block_index) for block_index in range(self.cfg.n_layers)]
+        )
         total_nodes = (cfg.n_heads + 1) * cfg.n_layers + 1
         self.edge_mask_output_logits = torch.nn.Parameter(
             torch.nn.init.normal_(torch.ones((total_nodes,)), mean=self.cfg.logits_e_init, std=0.01), 
             requires_grad=True)
+
+        if self.cfg.normalization_type == "RMS":
+            self.ln_final = RMSNorm(self.cfg)
+        elif self.cfg.normalization_type == "RMSPre":
+            self.ln_final = RMSNormPre(self.cfg)
+        elif self.cfg.normalization_type == "LN":
+            if self.cfg.final_rms:
+                self.ln_final = RMSNorm(self.cfg)
+            else:
+                self.ln_final = LayerNorm(self.cfg)
+        elif self.cfg.normalization_type == "LNPre":
+            # We've folded in LayerNorm weights, so just need the center + scale parts
+            if self.cfg.final_rms:
+                self.ln_final = RMSNormPre(self.cfg)
+            else:
+                self.ln_final = LayerNormPre(self.cfg)
+        elif self.cfg.normalization_type is None:
+            # If it's None, don't create either layer
+            pass
+        else:
+            logging.warning("Invalid normalization_type passed in %s", self.cfg.normalization_type)
+        self.unembed = Unembed(self.cfg)
+
+        if self.cfg.init_weights:
+            self.init_weights()
 
         # initialize mask logits
         # self.mask_logits_device = cfg.mask_logits_device
@@ -285,7 +241,7 @@ class CircuitGPT(nn.Module):
         # only register weight mask logits if cfg.use_weight_masks == True to save memory
         # load pretrained mask logits if necessary
         if self.use_weight_masks:
-            self.N_weight = 0            
+            self.N_weight = 0
             for name, p in self.named_parameters():
                 # do not learn masks for: 
                 # 1) embedding and unembedding layers
@@ -307,22 +263,29 @@ class CircuitGPT(nn.Module):
         if self.use_edge_masks:
             self.N_edge = 0
             for name, p in self.named_parameters():
-                if 'edge' in name:               
+                if 'edge' in name:
                     self.mask_logits_dict_edge[name] = p
                     with torch.no_grad():
                         self.N_edge += torch.ones_like(p.view(-1)).sum().cpu()
 
-
     def forward(self, tokens, return_states=False):
-        # tokens [batch, position]
-        embed = self.embed(tokens)
-        pos_embed = self.pos_embed(tokens)
-        residual = embed + pos_embed
+
+        if self.cfg.positional_embedding_type == "standard":
+            # tokens [batch, position]
+            embed = self.embed(tokens)
+            pos_embed = self.pos_embed(tokens)
+            residual = embed + pos_embed
+        elif self.cfg.positional_embedding_type == "rotary":
+            residual = self.embed(tokens)
+        else:
+            raise ValueError(
+                f"Invalid positional_embedding_type passed in {self.cfg.positional_embedding_type}"
+            )
         residual = einops.rearrange(residual, "batch position d_model -> batch position 1 d_model")
         
         for i, block in enumerate(self.blocks):
             residual = block(residual)
-        
+
         if return_states:
             return residual
 
@@ -447,13 +410,12 @@ class CircuitGPT(nn.Module):
         return self.N_edge.item(), N_edge_preserved.item(), edge_den.item()
 
 
-    def load_pretrained_weight(self, gpt_weights):
-        self.load_state_dict(gpt_weights, strict=False)
-        # update unmasked_params as well
-        for n, p in gpt_weights.items():
-            if n in self.unmasked_params:
-                self.unmasked_params[n] = p.clone()
-
+    # def load_pretrained_weight(self, gpt_weights):
+    #     self.load_state_dict(gpt_weights, strict=False)
+    #     # update unmasked_params as well
+    #     for n, p in gpt_weights.items():
+    #         if n in self.unmasked_params:
+    #             self.unmasked_params[n] = p.clone()
 
     def load_pretrained_weight_mask(self, mask_logits_dict_weight):
         for n, _ in mask_logits_dict_weight.items():
@@ -463,3 +425,16 @@ class CircuitGPT(nn.Module):
 
     def load_pretrained_edge_mask(self, mask_logits_dict_edge):
         self.load_state_dict(mask_logits_dict_edge, strict=False)
+
+    @classmethod
+    def from_pretrained(cls, model_name, **circuit_kwargs):
+        cfg = get_config(model_name, **circuit_kwargs)
+        model = cls(cfg)
+        state_dict = HookedTransformer.from_pretrained(model_name).state_dict()
+        model.load_state_dict(state_dict, strict=False)
+        for n, p in state_dict.items():
+            if n in model.unmasked_params:
+                model.unmasked_params[n] = p.clone()
+        del state_dict
+        torch.cuda.empty_cache()
+        return model

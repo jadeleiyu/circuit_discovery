@@ -9,8 +9,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('task')
 
-    parser.add_argument('-w', '--prune-weights', action='store_true')
-    parser.add_argument('-e', '--prune-edges', action='store_true')
+    parser.add_argument('-w', '--use-weight-masks', action='store_true')
+    parser.add_argument('-e', '--use-edge-masks', action='store_true')
     parser.add_argument('-m', '--model-name', default='gpt2')
 
     args = parser.parse_args()
@@ -28,4 +28,5 @@ if __name__ == '__main__':
     # Full model performance
     result = disco_gp.evaluate()
 
+    # Search for the circuits
     disco_gp.search_circuit()

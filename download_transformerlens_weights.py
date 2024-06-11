@@ -16,7 +16,5 @@ if __name__ == '__main__':
         raise ValueError
 
     model = HookedTransformer.from_pretrained(args.model_name)
-
     model_path.mkdir(parents=True)
-
     torch.save(model.state_dict(), model_path / 'model_weights.pt')
