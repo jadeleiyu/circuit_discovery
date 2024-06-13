@@ -55,20 +55,27 @@ class DiscoGP:
         self.dls = setup_task(self)
 
     @torch.no_grad
-    def evaluate(self, dl=None, reverse=False, use_weight_mask=True, use_edge_mask=True):
+    def evaluate(self, dl=None, reverse=False):
         if dl is None:
             dl = self.dls.eval
 
         self.model.eval()
 
-        self.model.turn_on_weight_masks(deterministic=True, reverse=reverse)  
-        _, _, weight_density = self.model.get_weight_density()       
-        self.model.turn_on_edge_masks(deterministic=True, reverse=reverse)  
-        _, _, edge_density = self.model.get_edge_density()
+        self.model.turn_on_weight_masks(deterministic=True, reverse=reverse)
+        self.model.turn_on_edge_masks(deterministic=True, reverse=reverse)
 
-        if not use_weight_mask:
+        if self.args.use_weight_masks:
+            _, _, weight_density = self.model.get_weight_density()
+        else:
+            weight_density = 'na'
+        if self.args.use_edge_masks:
+            _, _, edge_density = self.model.get_edge_density()
+        else:
+            edge_density = 'na'
+
+        if not self.args.use_weight_masks:
             self.model.turn_off_weight_masks()
-        if not use_edge_mask:
+        if not self.args.use_edge_masks:
             self.model.turn_off_edge_masks()
 
         total = len(dl.dataset)
@@ -194,5 +201,5 @@ class DiscoGP:
             use_weight_mask = mode == 'w'
             use_edge_mask = mode == 'e'
             
-            eval_results_faith = self.evaluate(use_weight_mask=use_weight_mask, use_edge_mask=use_edge_mask, reverse=False)
-            eval_results_complement = self.evaluate(use_weight_mask=use_weight_mask, use_edge_mask=use_edge_mask, reverse=True)
+            eval_results_faith = self.evaluate(dl=self.dls.eval, reverse=False)
+            eval_results_complement = self.evaluate(dl=self.dls.eval, reverse=True)

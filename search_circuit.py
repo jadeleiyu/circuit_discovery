@@ -12,6 +12,7 @@ if __name__ == '__main__':
     parser.add_argument('-w', '--use-weight-masks', action='store_true')
     parser.add_argument('-e', '--use-edge-masks', action='store_true')
     parser.add_argument('-m', '--model-name', default='gpt2')
+    parser.add_argument('-bs', '--batch-size', default=32, type=int)
 
     args = parser.parse_args()
 

@@ -1,8 +1,6 @@
 model_dir_path: /home/t-jniu/tl_model_weights/
 task_type: ioi
 
-batch_size: 128
-
 weight_hparams:
   gs_temp: 0.01
   logits_init: 0.0

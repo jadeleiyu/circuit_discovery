@@ -48,10 +48,16 @@ def setup_blimp(disco_gp):
     data_dict['input_ids'] = tokenized['input_ids']
     data_dict['seq_lens'] = tokenized['attention_mask'].sum(-1)
 
-    data_dict['target good'] = [token_ids[0] for token_ids in disco_gp.tokenizer(targets_good)['input_ids']]
-    data_dict['target bad'] = [token_ids[0] for token_ids in disco_gp.tokenizer(targets_bad)['input_ids']]
+    first_token_idx = 1 if disco_gp.tokenizer.add_bos_token else 0
 
-    # breakpoint()
+    data_dict['target good'] = [
+        token_ids[first_token_idx] for token_ids in
+        disco_gp.tokenizer(targets_good)['input_ids']
+    ]
+    data_dict['target bad'] = [
+        token_ids[first_token_idx] for token_ids in
+        disco_gp.tokenizer(targets_bad)['input_ids']
+    ]
 
     ds = Dataset.from_dict(data_dict).train_test_split(0.2).with_format('torch')
 
@@ -60,11 +66,11 @@ def setup_blimp(disco_gp):
 
     train_dl = DataLoader(
         ds['train'],
-        batch_size=disco_gp.configs.batch_size,
+        batch_size=disco_gp.args.batch_size,
     )
     eval_dl = DataLoader(
         ds['test'],
-        batch_size=disco_gp.configs.batch_size,
+        batch_size=disco_gp.args.batch_size,
         shuffle=False,
     )
 
@@ -78,11 +84,11 @@ def setup_ioi(disco_gp):
 
     train_dl = DataLoader(
         ds['train'],
-        batch_size=disco_gp.configs.batch_size,
+        batch_size=disco_gp.args.batch_size,
     )
     eval_dl = DataLoader(
         ds['test'],
-        batch_size=disco_gp.configs.batch_size,
+        batch_size=disco_gp.args.batch_size,
         shuffle=False,
     )
 

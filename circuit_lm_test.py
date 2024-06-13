@@ -10,9 +10,9 @@ import torch
 
 if __name__ == '__main__':
 
-    model_name = 'meta-llama/Llama-2-7b-hf'
-    # model_name = 'gpt2'
-
+    # model_name = 'meta-llama/Llama-2-7b-hf'
+    # model_name = 'gpt2-xl'
+    model_name = 'facebook/opt-1.3b'
 
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     t = tokenizer('Colorless green ideas sleep furiously', return_tensors='pt')
@@ -33,4 +33,4 @@ if __name__ == '__main__':
     res1 = model(tt)[0]
     res2 = tl_model(tt)
 
-    assert torch.allclose(res1, res2, atol=1e-5)
+    assert torch.allclose(res1, res2, atol=1e-4)

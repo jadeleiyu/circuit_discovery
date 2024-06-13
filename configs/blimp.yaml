@@ -1,8 +1,6 @@
 model_dir_path: /home/t-jniu/tl_model_weights/
 task_type: blimp
 
-batch_size: 16
-
 weight_hparams:
   gs_temp: 0.01
   logits_init: 0.0
@@ -19,7 +17,7 @@ weight_hparams:
 edge_hparams:
   gs_temp: 1.0
   logits_init: 0.0
-  lr: 0.1
+  lr: 0.001
   lambda_sparse_init: 1.0
   lambda_complete_init: 1.0
   min_times_lambda_sparse: 0.01

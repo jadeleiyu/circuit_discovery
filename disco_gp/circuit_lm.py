@@ -5,6 +5,7 @@ from .circuit_lm_config import get_config
 
 import numpy as np
 import math
+import logging
 
 import torch
 import torch.nn as nn
@@ -25,6 +26,7 @@ from transformer_lens.components import (
     GatedMLP,
     MLP,
     MoE,
+    Attention
 )
 from transformer_lens import HookedTransformer
 
@@ -36,7 +38,7 @@ def gumbel_sigmoid(logits, gs_temp=1., eps=1e-10):
     return res
 
 class Attention(nn.Module):
-    def __init__(self, cfg):
+    def __init__(self, cfg, attn_type, layer_id):
         super().__init__()
         self.cfg = cfg
         self.W_Q = nn.Parameter(torch.empty((cfg.n_heads, cfg.d_model, cfg.d_head)))
@@ -53,7 +55,71 @@ class Attention(nn.Module):
         # nn.init.normal_(self.W_O, std=self.cfg.init_range)
         self.b_O = nn.Parameter(torch.zeros((cfg.d_model)))
 
+        self.attn_type = attn_type
+        self.layer_id = layer_id
+
         self.register_buffer("IGNORE", torch.tensor(-1e5, dtype=torch.float32, device="cuda"))
+
+        if self.cfg.positional_embedding_type == "rotary":
+            sin, cos = self.calculate_sin_cos_rotary(
+                self.cfg.rotary_dim,
+                self.cfg.n_ctx,
+                base=self.cfg.rotary_base,
+                dtype=self.cfg.dtype,
+            )
+            self.register_buffer("rotary_sin", sin)
+            self.register_buffer("rotary_cos", cos)
+
+    def calculate_sin_cos_rotary(
+        self,
+        rotary_dim: int,
+        n_ctx: int,
+        base: int = 10000,
+        dtype: torch.dtype = torch.float32,
+    ):
+        high_precision = torch.float32 if dtype != torch.float64 else torch.float64
+        pos = torch.arange(n_ctx, dtype=high_precision)
+        dim = torch.arange(rotary_dim // 2, dtype=high_precision)
+
+        # A set of frequencies evenly spaced in log space
+        freq = base ** (dim / (rotary_dim / 2))
+        if self.cfg.rotary_adjacent_pairs:
+            freq = einops.repeat(freq, "d -> (d 2)")
+        else:
+            freq = einops.repeat(freq, "d -> (2 d)")
+        # Create a n_ctx x rotary_dim tensor, where each column is an arithmetic sequence of angles in that frequency
+        angles = pos[:, None] / freq[None, :]
+        return torch.sin(angles).to(dtype), torch.cos(angles).to(dtype)
+
+    def rotate_every_two(self, x):
+        rot_x = x.clone()
+        if self.cfg.rotary_adjacent_pairs:
+            rot_x[..., ::2] = -x[..., 1::2]
+            rot_x[..., 1::2] = x[..., ::2]
+        else:
+            n = x.size(-1) // 2
+            rot_x[..., :n] = -x[..., n:]
+            rot_x[..., n:] = x[..., :n]
+
+        return rot_x
+
+    def apply_rotary(self, x):
+        # Only apply rotary to first rotary_dim dimensions (eg, if rotary_dim=64 and d_head=256, only apply to first 1/4 of dimensions)
+        x_pos = x.size(1)
+        x_rot = x[..., : self.cfg.rotary_dim]
+        x_pass = x[..., self.cfg.rotary_dim :]
+        x_flip = self.rotate_every_two(x_rot)
+
+        rotary_cos = self.rotary_cos[
+            None, 0 : x_pos, None, :
+        ]
+        rotary_sin = self.rotary_sin[
+            None, 0 : x_pos, None, :
+        ]
+        x_rotated = x_rot * rotary_cos + x_flip * rotary_sin
+
+        return torch.cat([x_rotated, x_pass], dim=-1)
+
 
     def forward(self, normalized_resid_pre_q, normalized_resid_pre_k, normalized_resid_pre_v):
         # normalized_resid_pre: [batch, position, d_model]
@@ -62,6 +128,10 @@ class Attention(nn.Module):
         q = einsum("batch query_pos n_heads d_model, n_heads d_model d_head -> batch query_pos n_heads d_head", normalized_resid_pre_q, self.W_Q) + self.b_Q
 
         k = einsum("batch key_pos n_heads d_model, n_heads d_model d_head -> batch key_pos n_heads d_head", normalized_resid_pre_k, self.W_K) + self.b_K
+
+        if self.cfg.positional_embedding_type == "rotary":
+            q = self.apply_rotary(q)
+            k = self.apply_rotary(k)
 
         attn_scores = einsum("batch query_pos n_heads d_head, batch key_pos n_heads d_head -> batch n_heads query_pos key_pos", q, k)
         attn_scores = attn_scores / math.sqrt(self.cfg.d_head)
@@ -82,7 +152,7 @@ class Attention(nn.Module):
         return attn_scores
 
 class TransformerBlock(nn.Module):
-    def __init__(self, cfg, prev_layers: int):
+    def __init__(self, cfg, block_index):
         super().__init__()
         self.cfg = cfg
 
@@ -110,7 +180,7 @@ class TransformerBlock(nn.Module):
         else:
             logging.warning(f"Invalid normalization_type passed in {self.cfg.normalization_type}")
 
-        self.attn = Attention(cfg)
+        self.attn = Attention(cfg, "global", block_index)
 
         if not self.cfg.attn_only:
             if self.cfg.num_experts:
@@ -123,7 +193,7 @@ class TransformerBlock(nn.Module):
         for p in self.parameters():
             p.requires_grad = False
 
-        prev_nodes = (cfg.n_heads + 1) * prev_layers + 1
+        prev_nodes = (cfg.n_heads + 1) * block_index + 1
         self.edge_mask_attention_q_logits = torch.nn.Parameter(
             torch.nn.init.normal_(torch.ones((prev_nodes, cfg.n_heads)), mean=self.cfg.logits_e_init, std=0.01), 
             requires_grad=True)
