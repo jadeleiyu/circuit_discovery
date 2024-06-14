@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ## Supporting Models
 
 | Model      | Status | model_download_name      | Note                  |
-| ---        | ---    | ---                      |                       |
+| ---        | ---    | ---                      | ---                   |
 | gpt2-small | -[x]   | gpt2                     |                       |
 | gpt2-xl    | -[x]   | gpt2-xl                  |                       |
 | llama-2-7b | -[?]   | meta-llama/Llama-2-7b-hf | Need 80GB+ GPU Memory |
